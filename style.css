@@ -1,0 +1,379 @@
+:root {
+    --bg-base: #02050f;
+    --primary: #00e5ff;
+    --secondary: #8c00ff;
+    --text-main: #f0f4f8;
+    --text-muted: #8b9bb4;
+    --glass-bg: rgba(10, 15, 30, 0.65);
+    --glass-border: rgba(0, 229, 255, 0.15);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background-color: var(--bg-base);
+    color: var(--text-main);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Background Canvas */
+#cosmos-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+/* UI Structure */
+.ui-wrapper {
+    position: relative;
+    z-index: 10;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 4rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.logo {
+    font-weight: 800;
+    letter-spacing: 4px;
+    font-size: 1.2rem;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-indicators {
+    display: flex;
+    gap: 10px;
+}
+
+.indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.indicator.active {
+    background: var(--primary);
+    box-shadow: 0 0 10px var(--primary);
+    transform: scale(1.2);
+}
+
+/* Slides */
+.presentation-deck {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.95) translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.slide.active {
+    opacity: 1;
+    pointer-events: all;
+    transform: scale(1) translateY(0);
+}
+
+/* Glassmorphism Containers */
+.glass-container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: var(--glass-shadow);
+    width: 90%;
+    max-width: 1000px;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.glass-container.large-container {
+    max-width: 1200px;
+}
+
+.center-content {
+    text-align: center;
+}
+
+/* Typography & Text */
+h1.glitch-title {
+    font-size: 4.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 8px;
+    margin-bottom: 1rem;
+    position: relative;
+    text-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+}
+
+h2 {
+    font-size: 2.2rem;
+    color: var(--primary);
+    margin-bottom: 2rem;
+    border-left: 4px solid var(--secondary);
+    padding-left: 1rem;
+}
+
+h3 {
+    font-size: 1.4rem;
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.highlight {
+    color: var(--primary);
+    font-weight: bold;
+}
+
+.mt-2 { margin-top: 2rem; }
+
+/* Buttons */
+.btn-primary, .btn-secondary {
+    padding: 1rem 2.5rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    outline: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary {
+    background: transparent;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+}
+
+.btn-primary:hover {
+    background: var(--primary);
+    color: var(--bg-base);
+    box-shadow: 0 0 30px rgba(0, 229, 255, 0.6);
+}
+
+.btn-secondary {
+    background: rgba(140, 0, 255, 0.1);
+    color: #fff;
+    border: 1px solid var(--secondary);
+}
+
+.btn-secondary:hover {
+    background: rgba(140, 0, 255, 0.3);
+    box-shadow: 0 0 20px rgba(140, 0, 255, 0.4);
+}
+
+/* Narrative Reveal */
+.narrative-container .reveal-text {
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.8s ease;
+    border-left: 2px solid transparent;
+    padding-left: 15px;
+}
+
+.narrative-container .reveal-text.visible {
+    transform: translateY(0);
+    opacity: 1;
+    border-left: 2px solid var(--primary);
+}
+
+/* Pillars Grid */
+.pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.pillar-card {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 2rem;
+    border-radius: 12px;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.pillar-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--primary);
+}
+
+.pillar-card h3 {
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    font-size: 1.6rem;
+}
+
+.pillar-card h4 {
+    color: var(--secondary);
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+/* Lists */
+.roles-list {
+    list-style: none;
+}
+
+.roles-list li {
+    margin-bottom: 1rem;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.roles-list li::before {
+    content: '>>';
+    position: absolute;
+    left: 0;
+    color: var(--secondary);
+    font-weight: bold;
+}
+
+.roles-list strong {
+    color: #fff;
+}
+
+/* Finance Section */
+.finance-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.finance-card {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-align: center;
+    border-bottom: 3px solid var(--primary);
+}
+
+.big-number, .big-number-static {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #fff;
+    margin: 1rem 0;
+    text-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+}
+
+.budget-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.budget-table th, .budget-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.budget-table th {
+    color: var(--secondary);
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.budget-table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Timeline */
+.timeline {
+    position: relative;
+    padding-left: 3rem;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--primary), var(--secondary));
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 2.5rem;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -3.4rem;
+    top: 0;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--bg-base);
+    border: 2px solid var(--primary);
+}
+
+.timeline-item .date {
+    color: var(--primary);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--secondary);
+    border-radius: 4px;
+}
