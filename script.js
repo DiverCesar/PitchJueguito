@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     
     // --- LÓGICA DE DIAPOSITIVAS (SLIDES) ---
     const slides = document.querySelectorAll('.slide');
@@ -6,11 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentSlide = 0;
 
     // Crear indicadores de navegación
-    slides.forEach((_, index) => {
+    slides.forEach(function(_, index) {
         const dot = document.createElement('div');
         dot.classList.add('indicator');
         if (index === 0) dot.classList.add('active');
-        navIndicators.appendChild(dot);
+        if (navIndicators) navIndicators.appendChild(dot);
     });
     
     const indicators = document.querySelectorAll('.indicator');
@@ -19,23 +19,28 @@ document.addEventListener('DOMContentLoaded', () => {
         if (index < 0 || index >= slides.length) return;
         
         slides[currentSlide].classList.remove('active');
-        indicators[currentSlide].classList.remove('active');
+        if (indicators[currentSlide]) indicators[currentSlide].classList.remove('active');
         
         currentSlide = index;
         
         slides[currentSlide].classList.add('active');
-        indicators[currentSlide].classList.add('active');
+        if (indicators[currentSlide]) indicators[currentSlide].classList.add('active');
 
         // Disparar eventos específicos de la diapositiva
         triggerSlideEvents(currentSlide);
     }
 
     // Botones de navegación
-    document.querySelector('.start-pitch').addEventListener('click', () => goToSlide(1));
+    const startPitchBtn = document.querySelector('.start-pitch');
+    if (startPitchBtn) {
+        startPitchBtn.addEventListener('click', function() { 
+            goToSlide(1); 
+        });
+    }
     
     const nextButtons = document.querySelectorAll('.next-slide');
-    nextButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
+    nextButtons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
             goToSlide(currentSlide + 1);
         });
     });
@@ -45,8 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Slide 2: Revelación de Narrativa
         if (index === 1) {
             const narrativeTexts = document.querySelectorAll('.reveal-text');
-            narrativeTexts.forEach((text, i) => {
-                setTimeout(() => {
+            narrativeTexts.forEach(function(text, i) {
+                setTimeout(function() {
                     text.classList.add('visible');
                 }, i * 1200); // Aparecen cada 1.2 segundos
             });
@@ -55,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Slide 5: Animación de Finanzas (Contadores)
         if (index === 4) {
             const numbers = document.querySelectorAll('.big-number');
-            numbers.forEach(num => {
+            numbers.forEach(function(num) {
                 const target = +num.getAttribute('data-target');
                 animateValue(num, 0, target, 2000); // 2 segundos de duración
             });
@@ -65,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Función para animar contadores financieros
     function animateValue(obj, start, end, duration) {
         let startTimestamp = null;
-        const step = (timestamp) => {
+        const step = function(timestamp) {
             if (!startTimestamp) startTimestamp = timestamp;
             const progress = Math.min((timestamp - startTimestamp) / duration, 1);
             // Función ease-out
@@ -91,71 +96,73 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- SISTEMA DE PARTÍCULAS DE FONDO (CANVAS) ---
     const canvas = document.getElementById('cosmos-canvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        let particles = [];
 
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-    
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    class Particle {
-        constructor() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 2 + 0.5;
-            this.speedX = (Math.random() - 0.5) * 0.5;
-            this.speedY = (Math.random() - 0.5) * 0.5;
-            this.color = Math.random() > 0.8 ? '#8c00ff' : '#00e5ff'; 
-            this.opacity = Math.random();
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
         
-        update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.color = Math.random() > 0.8 ? '#8c00ff' : '#00e5ff'; 
+                this.opacity = Math.random();
+            }
             
-            // Reaparecer al salir de los bordes
-            if (this.x < 0) this.x = canvas.width;
-            if (this.x > canvas.width) this.x = 0;
-            if (this.y < 0) this.y = canvas.height;
-            if (this.y > canvas.height) this.y = 0;
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                
+                // Reaparecer al salir de los bordes
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
+            }
+            
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.opacity;
+                ctx.fill();
+            }
         }
-        
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fillStyle = this.color;
-            ctx.globalAlpha = this.opacity;
-            ctx.fill();
+
+        function initParticles() {
+            particles = [];
+            const numParticles = Math.floor((canvas.width * canvas.height) / 8000);
+            for (let i = 0; i < numParticles; i++) {
+                particles.push(new Particle());
+            }
         }
-    }
 
-    function initParticles() {
-        particles = [];
-        const numParticles = Math.floor((canvas.width * canvas.height) / 8000);
-        for (let i = 0; i < numParticles; i++) {
-            particles.push(new Particle());
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Efecto de rastro espacial
+            ctx.fillStyle = 'rgba(2, 5, 15, 0.2)'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(function(particle) {
+                particle.update();
+                particle.draw();
+            });
+            
+            requestAnimationFrame(animateParticles);
         }
-    }
 
-    function animateParticles() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Efecto de rastro espacial
-        ctx.fillStyle = 'rgba(2, 5, 15, 0.2)'; 
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        particles.forEach(particle => {
-            particle.update();
-            particle.draw();
-        });
-        
-        requestAnimationFrame(animateParticles);
+        initParticles();
+        animateParticles();
     }
-
-    initParticles();
-    animateParticles();
 });
